@@ -1,0 +1,55 @@
+version: '3.8'
+services:
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./conf/prometheus:/etc/prometheus/
+      - prometheus_data:/var/lib/prometheus
+    networks:
+      - backend
+    ports:
+      - 9090:9090
+  node-exporter:
+    image: prom/node-exporter
+    hostname: '{{.Node.ID}}'
+    volumes:
+      - /proc:/usr/proc
+      - /sys:/usr/sys
+      - /:/rootfs
+    deploy:
+      mode: global
+    networks:
+      - backend
+    ports:
+      - 9100:9100
+  cadvisor:
+    image: google/cadvisor
+    hostname: '{{.Node.ID}}'
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - backend
+    deploy:
+      mode: global
+    ports:
+      - 8080:8080
+  grafana:
+    image: grafana/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - backend
+      - frontend
+    ports:
+      - 3000:3000
+
+networks:
+  frontend:
+  backend:
+volumes:
+  prometheus_data:
+
