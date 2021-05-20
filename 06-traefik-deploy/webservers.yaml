@@ -1,0 +1,32 @@
+version: '3'
+services:
+  loja:
+    image: nginx:latest
+    networks:
+      - traefik-public
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        # Regra criada para o host, redirecionando para o serviço
+        - "traefik.http.routers.loja.rule=Host('loja.observability.com.br')"
+        # Regra no entrypoint
+        - "traefik.http.routers.loja.entrypoint=websecure"
+        - "traefik.http.routers.loja.tls.certresolver=letsencryptresolver"
+        - "traefik.http.services.loja.loadbalancer.server.port=80"
+
+  store:
+    image: httpd:latest
+    networks:
+      - traefik-public
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        # Regra criada para o host, redirecionando para o serviço
+        - "traefik.http.routers.store.rule=Host('store.observability.com.br')"
+        # Regra no entrypoint
+        - "traefik.http.routers.store.entrypoint=websecure"
+        - "traefik.http.routers.loja.tls.certresolver=letsencryptresolver"
+        - "traefik.http.services.store.loadbalancer.server.port=80"
+
+networks:
+  traefik-public:
