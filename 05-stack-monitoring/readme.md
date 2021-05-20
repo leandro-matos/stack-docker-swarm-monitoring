@@ -4,16 +4,15 @@
 * docker stack ls
 
 Prometheus:
-http://SEU_IP:9090
+**http://SEU_IP:9090**
 
 Grafana:
-http://SEU_IP:3000
+**http://SEU_IP:3000**
 
 Node_Exporter:
-http://SEU_IP:9100
+**http://SEU_IP:9100**
 
 cAdivisor:
-http://SEU_IP:8080
+**http://SEU_IP:8080**
 
 * docker stack rm giropops
-
